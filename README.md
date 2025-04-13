@@ -15,3 +15,4 @@ If you are developing a production application, we recommend using TypeScript an
 # hito-3
 # hito-3
 # Hito_4
+# Hito-6
