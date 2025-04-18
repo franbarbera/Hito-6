@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./Pizza.css";
+import { useCart } from "./CartContext"; // Importa el hook useCart
 
 const Pizza = () => {
   const { id } = useParams();
   const [pizza, setPizza] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart } = useCart(); // Obtén la función addToCart del contexto
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/pizzas/${id}`)
@@ -25,6 +27,12 @@ const Pizza = () => {
         setLoading(false);
       });
   }, [id]);
+
+  const handleAddToCart = () => {
+    if (pizza) {
+      addToCart(pizza);
+    }
+  };
 
   if (loading) {
     return <p>Cargando pizza...</p>;
@@ -50,7 +58,7 @@ const Pizza = () => {
           <li key={index}>{ingredient}</li>
         ))}
       </ul>
-      <button>Añadir al carrito</button>
+      <button onClick={handleAddToCart}>Añadir al carrito</button>
     </div>
   );
 };

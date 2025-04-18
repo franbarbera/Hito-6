@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useCart } from "./CartContext";
 
 const Navbar = () => {
-  const [token, setToken] = useState(false);
-  const [total, setTotal] = useState(25000);
+  const { getTotalPrice } = useCart();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setToken(false);
     navigate("/");
   };
 
@@ -22,7 +21,7 @@ const Navbar = () => {
         🍕 Home
       </Link>
 
-      {token ? (
+      {localStorage.getItem("token") ? (
         <>
           <Link to="/profile" className="navbar-link">
             🔓 Profile
@@ -43,7 +42,7 @@ const Navbar = () => {
       )}
 
       <button onClick={handleCartClick} className="navbar-button">
-        🛒 Total: ${total.toLocaleString()}
+        🛒 Total: ${getTotalPrice().toLocaleString()}
       </button>
     </nav>
   );

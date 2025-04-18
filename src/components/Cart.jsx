@@ -1,55 +1,45 @@
-import { useState } from "react";
 import "./Cart.css";
-
-const pizzaCart = [];
+import { useCart } from "./CartContext";
 
 const Cart = () => {
-  const [cart, setCart] = useState(pizzaCart);
-
-  const increaseQuantity = (id) => {
-    setCart(
-      cart.map((pizza) =>
-        pizza.id === id ? { ...pizza, count: pizza.count + 1 } : pizza
-      )
-    );
-  };
-
-  const decreaseQuantity = (id) => {
-    setCart((prevCart) =>
-      prevCart
-        .map((pizza) =>
-          pizza.id === id
-            ? { ...pizza, count: Math.max(pizza.count - 1, 0) }
-            : pizza
-        )
-        .filter((pizza) => pizza.count > 0)
-    );
-  };
-
-  const total = cart.reduce((sum, pizza) => sum + pizza.price * pizza.count, 0);
+  const {
+    cartItems,
+    increaseQuantity,
+    decreaseQuantity,
+    removeFromCart,
+    getTotalPrice,
+  } = useCart();
 
   return (
     <div className="cart-container">
       <h2>🛒 Carrito de compras</h2>
-      {cart.length > 0 ? (
-        cart.map((pizza) => (
-          <div key={pizza.id} className="cart-item">
-            <img src={pizza.img} alt={pizza.name} />
+      {cartItems.length > 0 ? (
+        cartItems.map((item) => (
+          <div key={item.id} className="cart-item">
+            <img src={item.img} alt={item.name} />
             <div>
-              <h3>{pizza.name}</h3>
-              <p>${pizza.price.toLocaleString()}</p>
-              <p>Cantidad: {pizza.count}</p>
-              <button onClick={() => increaseQuantity(pizza.id)}>➕</button>
-              <button onClick={() => decreaseQuantity(pizza.id)}>➖</button>
+              <h3>{item.name}</h3>
+              <p>${item.price.toLocaleString()}</p>
+              <div className="quantity-controls">
+                <button onClick={() => decreaseQuantity(item.id)}>➖</button>
+                <p>Cantidad: {item.quantity}</p>
+                <button onClick={() => increaseQuantity(item.id)}>➕</button>
+              </div>
+              <button
+                className="remove-button"
+                onClick={() => removeFromCart(item.id)}
+              >
+                Eliminar
+              </button>
             </div>
           </div>
         ))
       ) : (
         <p>No hay pizzas en el carrito 🍕</p>
       )}
-      {cart.length > 0 && (
+      {cartItems.length > 0 && (
         <>
-          <h3 className="total">Total: ${total.toLocaleString()}</h3>
+          <h3 className="total">Total: ${getTotalPrice().toLocaleString()}</h3>
           <button className="pay-button">Pagar</button>
         </>
       )}
